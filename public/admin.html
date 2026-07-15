@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - GIOBBE</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos adicionales exclusivos para organizar el panel en dos columnas */
+        .admin-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .admin-section {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .admin-section h2 {
+            margin-top: 0;
+            color: #0d1b2a;
+            border-bottom: 2px solid #e0e1dd;
+            padding-bottom: 10px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body style="background-color: #e0e1dd;">
+
+    <header style="background: #1b263b;">
+        <h1>PANEL ADMINISTRATIVO - GIOBBE</h1>
+        <p>Control de Empresas y Requerimientos del Sector de Seguridad</p>
+        <br>
+        <a href="index.html" style="color: #2ec4b6; font-weight: bold; text-decoration: none;">👈 Volver a la Vista de Candidatos</a>
+    </header>
+
+    <main class="admin-container">
+        
+        <!-- SECCIÓN 1: REGISTRAR EMPRESAS -->
+        <section class="admin-section">
+            <h2>1. Registrar Nueva Empresa</h2>
+            <form id="form-empresa">
+                <div class="form-group">
+                    <label>Nombre de la Empresa:</label>
+                    <input type="text" id="emp-nombre" required placeholder="Ej: Seguridad GIOBBE Ltda">
+                </div>
+                <div class="form-group">
+                    <label>Teléfono de Contacto (WhatsApp con código):</label>
+                    <input type="text" id="emp-tel" required placeholder="Ej: 573001234567">
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico Corporativo:</label>
+                    <input type="email" id="emp-correo" required placeholder="correo@empresa.com" style="width:100%; padding:10px; border-radius:6px; border:1px solid #cbd5e1; box-sizing:border-box;">
+                </div>
+                <div class="form-group">
+                    <label>Dirección Física de la Sede:</label>
+                    <input type="text" id="emp-dir" placeholder="Ej: Calle 10 #15-20, Bogotá">
+                </div>
+                <div class="form-group">
+                    <label>Enlace de Ubicación (Google Maps):</label>
+                    <input type="text" id="emp-maps" placeholder="https://google.com...">
+                </div>
+                <button type="submit" style="background-color: #0d1b2a; color: white; width: 100%;">Guardar Empresa</button>
+            </form>
+        </section>
+
+        <!-- SECCIÓN 2: CREAR VACANTES -->
+        <section class="admin-section">
+            <h2>2. Crear Requerimiento / Vacante</h2>
+            <form id="form-vacante">
+                <div class="form-group">
+                    <label>Seleccionar Empresa Contratante:</label>
+                    <select id="vac-empresa" required>
+                        <option value="">Cargando empresas registradas...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cargo Solicitado:</label>
+                    <select id="vac-cargo">
+                        <option value="Vigilante">Vigilante</option>
+                        <option value="OMT">OMT</option>
+                        <option value="Supervisor">Supervisor</option>
+                        <option value="Escolta">Escolta</option>
+                        <option value="Manejador Canino">Manejador Canino</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Género Requerido:</label>
+                    <select id="vac-genero">
+                        <option value="Ambos">Ambos (Hombres y Mujeres)</option>
+                        <option value="Hombre">Solo Hombres</option>
+                        <option value="Mujer">Solo Mujeres</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Experiencia Requerida:</label>
+                    <select id="vac-exp">
+                        <option value="Sin Experiencia">Sin Experiencia (Acepta Aprendices/Nuevos)</option>
+                        <option value="Con Experiencia">Con Experiencia Laboral Comprobable</option>
+                        <option value="Ambas">Indiferente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Convocatoria:</label>
+                    <select id="vac-tipo" onchange="alternarCampoMasivo(this.value)">
+                        <option value="Individual">Individual (Postular Hoja de Vida por Correo/WhatsApp)</option>
+                        <option value="Masiva">Masiva (Presentarse directamente a las instalaciones)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="grupo-masivo" style="display:none;">
+                    <label>Detalles de Presentación (Horarios, qué llevar, referencias de la dirección):</label>
+                    <textarea id="vac-detalles" rows="4" style="width:100%; border-radius:6px; border:1px solid #cbd5e1; padding:10px; box-sizing:border-box;" placeholder="Ej: Presentarse de 8:00 AM a 11:00 AM con cédula original y libreta militar..."></textarea>
+                </div>
+                <button type="submit" class="btn-postular" style="width: 100%;">Publicar Vacante Ahora</button>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // Al cargar la página, traemos las empresas de la base de datos para el menú desplegable
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/empresas')
+                .then(res => res.json())
+                .then(empresas => {
+                    const select = document.getElementById('vac-empresa');
+                    if(empresas.length === 0) {
+                        select.innerHTML = '<option value="">⚠️ Primero registra una empresa a la izquierda</option>';
+                        return;
+                    }
+                    select.innerHTML = '<option value="">-- Selecciona una Empresa --</option>';
+                    empresas.forEach(e => {
+                        select.innerHTML += `<option value="${e.id}">${e.nombre}</option>`;
+                    });
+                });
+        });
+
+        // Muestra u oculta el cuadro de texto si la convocatoria es masiva
+        function alternarCampoMasivo(valor) {
+            document.getElementById('grupo-masivo').style.display = (valor === 'Masiva') ? 'block' : 'none';
+        }
+
+        // GUARDAR NUEVA EMPRESA EN MYSQL
+        document.getElementById('form-empresa').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                nombre: document.getElementById('emp-nombre').value,
+                telefono: document.getElementById('emp-tel').value,
+                correo: document.getElementById('emp-correo').value,
+                direccion: document.getElementById('emp-dir').value,
+                ubicacion_maps: document.getElementById('emp-maps').value
+            };
+            
+            fetch('/api/empresas', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert(res.message);
+                location.reload(); // Recarga la página para actualizar el menú desplegable
+            });
+        });
+
+        // GUARDAR NUEVA VACANTE EN MYSQL
+        document.getElementById('form-vacante').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                empresa_id: document.getElementById('vac-empresa').value,
+                cargo: document.getElementById('vac-cargo').value,
+                genero: document.getElementById('vac-genero').value,
+                experiencia: document.getElementById('vac-exp').value,
+                tipo_convocatoria: document.getElementById('vac-tipo').value,
+                detalles_presentacion: document.getElementById('vac-detalles').value
+            };
+            
+            fetch('/api/vacantes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert(res.message);
+                window.location.href = 'index.html'; // Te redirige automáticamente a la página de candidatos para ver tu nueva vacante
+            });
+        });
+    </script>
+</body>
+</html>

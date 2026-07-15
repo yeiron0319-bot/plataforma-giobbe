@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Empleo - GIOBBE & Academia Clave</title>
+    <!-- Enlace al archivo de diseño visual de tu proyecto -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1. PANTALLA DE CARGA (SPLASH SCREEN) -->
+    <!-- Muestra tu nuevo logotipo metálico de GIOBBE al iniciar la web -->
+    <div id="splash-screen">
+        <img id="logo-animado" src="escudo-giobbe.jpg" class="escudo" alt="Logo Corporativo GIOBBE">
+        <h2 id="texto-carga">Cargando Plataforma GIOBBE...</h2>
+    </div>
+
+    <!-- 2. ENCABEZADO DE LA PLATAFORMA -->
+    <header>
+        <h1>CONVOCATORIAS DE SEGURIDAD PRIVADA</h1>
+        <p>Plataforma Oficial de Requerimientos y Vacantes</p>
+    </header>
+
+    <!-- 3. CONTENIDO PRINCIPAL -->
+    <main>
+        <!-- Formulario Modal para la Postulación Directa (Subir Hoja de Vida) -->
+        <div id="modal-postular" style="display:none;">
+            <h3>Completa tu Postulación</h3>
+            <form id="form-postulacion" enctype="multipart/form-data">
+                <!-- Parámetros ocultos para direccionar los datos del postulante -->
+                <input type="hidden" id="postula-correo">
+                <input type="hidden" id="postula-telefono">
+                <input type="hidden" id="postula-cargo">
+                
+                <div class="form-group">
+                    <label>Tu Nombre Completo:</label>
+                    <input type="text" id="postula-nombre" required placeholder="Ej: Yeiron Rivas">
+                </div>
+                <div class="form-group">
+                    <label>Sube tu Hoja de Vida (Formato PDF únicamente):</label>
+                    <input type="file" id="postula-pdf" accept=".pdf" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn-postular">Confirmar Envío</button>
+                    <button type="button" onclick="cerrarModal()" style="background:#6c757d; color:white;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Bloque donde app.js renderiza las vacantes registradas en MySQL -->
+        <section id="contenedor-vacantes">
+            <p>Buscando requerimientos disponibles en la base de datos...</p>
+        </section>
+    </main>
+
+    <!-- Enlace a la lógica de transiciones e interactividad -->
+    <script src="app.js"></script>
+</body>
+</html>
