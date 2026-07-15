@@ -122,4 +122,4 @@ const PUERTO = 3000;
 app.listen(PUERTO, () => {
     console.log(`💻 Servidor backend corriendo en: http://localhost:${PUERTO}`);
     console.log(`📡 Base de Datos lista para recibir peticiones POST, GET y DELETE`);
-});
+});.
