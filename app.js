@@ -6,6 +6,7 @@
 // ENLACE OFICIAL DE PRODUCCIÓN EN RENDER (Reemplaza por completo a localhost)
 const API_URL = 'https://onrender.com';
 
+
 document.addEventListener('DOMContentLoaded', () => {
     // Detectar en qué página estamos para cargar las funciones correctas
     if (document.getElementById('contenedor-vacantes')) {
